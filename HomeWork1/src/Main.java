@@ -5,8 +5,14 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        Point f = new Point(0,0);
-        Point s = new Point(3,4);
+        Point f = new Point(0,4);
+        Point s = new Point(3,0);
         System.out.println(CalculateDistance(f,s));
+
+        Rect rect = new Rect(f, s);
+
+        System.out.println(RectHandler.GetArea(rect));
+        System.out.println(RectHandler.GetPerimeter(rect));
+        System.out.println(RectHandler.HasOrigin(rect));
     }
 }
