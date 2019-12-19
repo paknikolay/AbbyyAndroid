@@ -28,8 +28,8 @@
     <string name="date_10">30.03.1982 03:16:45</string>
     <string name="date_11">21.03.1982 13:06:45</string>
     <string name="date_12">20.03.1982 12:25:45</string>
-    
-    <string name="detailed_note">Detailed Note</string>
-    <string name="notes"> Notes </string>
+
+    <string name="detailedNoteActivityTitle">Detailed Note</string>
+    <string name="noteActivityTitle">Notes</string>
 
 </resources>
