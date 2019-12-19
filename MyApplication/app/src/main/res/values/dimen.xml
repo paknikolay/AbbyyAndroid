@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="note_list_item_image_width"> 96dp </dimen>
+    <dimen name="note_list_item_image_height"> 96dp </dimen>
+    <dimen name="standard_margin"> 16dp </dimen>
+    <dimen name="standard_margin_2"> 8dp </dimen>
+    <dimen name="card_view_height"> 128dp </dimen>
+
+
+</resources>

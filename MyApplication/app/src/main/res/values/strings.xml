@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="text_0">Shiba 1</string>
+    <string name="text_1">Shiba 2</string>
+    <string name="text_2">Shiba 3</string>
+    <string name="text_3">Shiba 4</string>
+    <string name="text_4">Shiba 5</string>
+    <string name="text_5">Shiba 6</string>
+    <string name="text_6">Shiba 7</string>
+    <string name="text_7">Shiba 8</string>
+    <string name="text_8">Shiba 9</string>
+    <string name="text_9">Shiba 10</string>
+    <string name="text_10">Shiba 11</string>
+    <string name="text_11">Shiba 12</string>
+    <string name="text_12">Shiba 13</string>
+
+
+    <string name="date_0">24.03.1982 13:56:45</string>
+    <string name="date_1">12.03.1982 12:56:45</string>
+    <string name="date_2">14.03.1982 13:45:23</string>
+    <string name="date_3">04.03.2015 01:04:55</string>
+    <string name="date_4">24.03.2001 22:53:06</string>
+    <string name="date_5">24.03.1982 16:34:45</string>
+    <string name="date_6">12.03.1982 13:49:45</string>
+    <string name="date_7">05.03.1982 13:18:45</string>
+    <string name="date_8">24.03.1145 12:56:45</string>
+    <string name="date_9">24.03.1993 13:42:45</string>
+    <string name="date_10">30.03.1982 03:16:45</string>
+    <string name="date_11">21.03.1982 13:06:45</string>
+    <string name="date_12">20.03.1982 12:25:45</string>
+
+    <string name="detailedNoteActivityTitle">Detailed Note</string>
+    <string name="noteActivityTitle">Notes</string>
+
+</resources>

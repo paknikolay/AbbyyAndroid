@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.cardview.widget.CardView android:id="@+id/cardView"
+
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/card_view_height"
+
+    android:layout_marginLeft="@dimen/standard_margin"
+    android:layout_marginRight="@dimen/standard_margin"
+    android:layout_marginTop="@dimen/standard_margin_2"
+
+    android:background="?selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+
+    app:layout_constraintTop_toTopOf="parent"
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".MainActivity"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:src="@drawable/image_4"
+            android:id="@+id/note_list_image"
+            android:layout_width="@dimen/note_list_item_image_width"
+            android:layout_height="@dimen/note_list_item_image_height"
+            android:layout_marginTop="@dimen/standard_margin"
+            android:layout_marginStart="@dimen/standard_margin"
+            android:layout_marginBottom="@dimen/standard_margin"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+        <TextView
+            android:id="@+id/note_list_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="curr data"
+            android:layout_marginTop="@dimen/standard_margin"
+            android:layout_marginStart="@dimen/standard_margin"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/note_list_image"
+            app:layout_constraintBottom_toTopOf="@id/note_list_text"
+            android:layout_marginBottom="@dimen/standard_margin_2"
+            />
+
+        <TextView
+            android:id="@+id/note_list_text"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/standard_margin"
+            android:layout_marginEnd="@dimen/standard_margin"
+            android:layout_marginBottom="@dimen/standard_margin"
+            app:layout_constraintTop_toBottomOf="@id/note_list_data"
+            app:layout_constraintStart_toEndOf="@id/note_list_image"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:text="@string/text_1"
+            android:ellipsize="end"
+            android:maxLines="4"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>
+
