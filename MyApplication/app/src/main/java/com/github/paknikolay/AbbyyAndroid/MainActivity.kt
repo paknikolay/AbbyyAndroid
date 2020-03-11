@@ -11,8 +11,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        var b = R.bool.isPhone as Boolean
-        ;
+
         if (savedInstanceState == null) {
             supportFragmentManager
                 .beginTransaction()

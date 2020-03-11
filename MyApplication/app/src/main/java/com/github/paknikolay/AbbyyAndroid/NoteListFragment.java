@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import org.jetbrains.annotations.NotNull;
@@ -46,7 +47,13 @@ public class NoteListFragment extends Fragment implements NoteAdapter.Listener  
         super.onViewCreated(view, savedInstanceState);
         final RecyclerView recyclerView = view.findViewById(R.id.NoteRecyclerView);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        if(getActivity().getResources().getBoolean(R.bool.isOneColmn)) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        } else {
+            RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 2);
+            recyclerView.setLayoutManager(mLayoutManager);
+        }
+
         recyclerView.setHasFixedSize(true);
         recyclerView.getRecycledViewPool().setMaxRecycledViews(0, 15);
 
