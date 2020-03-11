@@ -1,47 +1,45 @@
 package com.github.paknikolay.AbbyyAndroid
 
-import android.animation.AnimatorInflater
-import android.animation.AnimatorSet
+import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.cardview.widget.CardView
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.appcompat.app.AppCompatActivity
 
 
-class MainActivity : AppCompatActivity(), NoteAdapter.Listener {
+class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        title = resources.getString(R.string.noteActivityTitle);
-
-        var recyclerView = findViewById<RecyclerView>(R.id.NoteRecyclerView)
-
-        recyclerView.setLayoutManager(LinearLayoutManager(this))
-        recyclerView.setHasFixedSize(true)
-        recyclerView.recycledViewPool.setMaxRecycledViews(0, 15)
-
-        val adapter = NoteAdapter()
-        recyclerView.setAdapter(adapter)
-        adapter.setNoteList(NoteRepository.getTextList())
-        adapter.setListener(this)
-
+        var b = R.bool.isPhone as Boolean
+        ;
+        if (savedInstanceState == null) {
+            supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.listNoteContainer, NoteListFragment.newInstance("ListNoteFragment"), NoteListFragment.TAG)
+                .addToBackStack(null)
+                .commit()
+        }
     }
 
-    override fun onNoteClick(cardView: CardView, id: Long) {
-        startAnimationViaAnimator(cardView);
+    fun showDetailFragment(name: String, id:Long) {
+        if (supportFragmentManager.findFragmentByTag(NoteFragment.TAG) != null) { // Если на экране уже есть фрагмент с деталями, то надо его убрать перед показом нового
+            supportFragmentManager.popBackStack()
+        }
 
-        val intent = Intent(this, NoteActivity::class.java);
-        intent.putExtra("id", id);
-        startActivity(intent)
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.noteContainer, NoteFragment.newInstance(name, id), NoteFragment.TAG)
+            .addToBackStack(null)
+            .commit()
     }
 
-    private fun startAnimationViaAnimator(cardView: CardView) {
-        val set = AnimatorInflater.loadAnimator(this, R.animator.animation) as AnimatorSet
-        set.setTarget(cardView)
-        set.start()
+    override fun onBackPressed() {
+        if (supportFragmentManager.backStackEntryCount == 1) {
+            finish()
+        } else {
+            super.onBackPressed()
+        }
     }
 }
 
