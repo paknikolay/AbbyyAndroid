@@ -5,6 +5,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
+import com.github.paknikolay.AbbyyAndroid.db.Note
 
 import java.text.SimpleDateFormat
 

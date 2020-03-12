@@ -2,12 +2,10 @@ package com.github.paknikolay.AbbyyAndroid;
 
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
@@ -15,7 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import org.jetbrains.annotations.NotNull;
+import com.github.paknikolay.AbbyyAndroid.db.NoteRepository;
 
 public class NoteListFragment extends Fragment implements NoteAdapter.Listener  {
     public static final String TAG = "NoteListFragment";
@@ -57,11 +55,13 @@ public class NoteListFragment extends Fragment implements NoteAdapter.Listener  
         recyclerView.setHasFixedSize(true);
         recyclerView.getRecycledViewPool().setMaxRecycledViews(0, 15);
 
+        ((MainActivity) getActivity()).getNoteRepository().loadAll();
+
         NoteAdapter adapter = new NoteAdapter();
         recyclerView.setAdapter(adapter);
+
         adapter.setNoteList(NoteRepository.getTextList());
         adapter.setListener(this);
-
 
         final String name = getArguments().getString(NAME_KEY);
 

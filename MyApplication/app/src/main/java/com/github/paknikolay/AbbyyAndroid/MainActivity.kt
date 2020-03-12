@@ -4,13 +4,16 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.github.paknikolay.AbbyyAndroid.db.NoteRepository
 
 
 class MainActivity : AppCompatActivity() {
-
+    private var noteRepository : NoteRepository? = null;
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        noteRepository = NoteRepository(App.getDatabaseHolder());
 
         if (savedInstanceState == null) {
             supportFragmentManager
@@ -31,6 +34,10 @@ class MainActivity : AppCompatActivity() {
             .replace(R.id.noteContainer, NoteFragment.newInstance(name, id), NoteFragment.TAG)
             .addToBackStack(null)
             .commit()
+    }
+
+    fun getNoteRepository() : NoteRepository? {
+        return noteRepository;
     }
 
     override fun onBackPressed() {

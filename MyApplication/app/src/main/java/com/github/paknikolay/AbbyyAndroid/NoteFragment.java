@@ -1,8 +1,5 @@
 package com.github.paknikolay.AbbyyAndroid;
 
-import android.animation.AnimatorInflater;
-import android.animation.AnimatorSet;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,12 +8,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import org.jetbrains.annotations.NotNull;
-import org.w3c.dom.Text;
+import com.github.paknikolay.AbbyyAndroid.db.NoteRepository;
+
 
 public class NoteFragment extends Fragment {
 
