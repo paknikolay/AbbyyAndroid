@@ -32,7 +32,7 @@
         android:layout_marginTop="@dimen/standard_margin"
         android:layout_marginStart="@dimen/standard_margin"
         android:layout_marginEnd="@dimen/standard_margin"
-        android:text="@string/text_1"
+        tools:text="@string/text_1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/note_image"

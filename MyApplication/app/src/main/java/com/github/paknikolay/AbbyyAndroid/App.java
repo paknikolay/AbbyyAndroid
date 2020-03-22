@@ -17,6 +17,7 @@ public class App extends Application {
         context = this;
 
         databaseHolder = new DatabaseHolder(context);
+        ImageIdHolder.initialise(context);
     }
 
     // Способ получения контекста из любой части приложения

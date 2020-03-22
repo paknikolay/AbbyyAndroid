@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.github.paknikolay.AbbyyAndroid.App;
 
 
 public class AppSqliteOpenHelper extends SQLiteOpenHelper {
@@ -14,13 +15,13 @@ public class AppSqliteOpenHelper extends SQLiteOpenHelper {
     private static Context context = null;
 
     public AppSqliteOpenHelper(@Nullable final Context context) {
-        super(context, DATABASE_NAME, null, VERSION);
+        super(App.getContext(), DATABASE_NAME, null, VERSION);
         this.context = context;
     }
 
     @Override
     public void onCreate(@NonNull final SQLiteDatabase db) {
-        NoteContract.createTable(db, context);
+        NoteContract.createTable(db, App.getContext());
     }
 
     @Override

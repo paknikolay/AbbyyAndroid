@@ -8,12 +8,12 @@ import com.github.paknikolay.AbbyyAndroid.db.NoteRepository
 
 
 class MainActivity : AppCompatActivity() {
-    private var noteRepository : NoteRepository? = null;
+    private var noteRepository : NoteRepository? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        noteRepository = NoteRepository(App.getDatabaseHolder());
+        noteRepository = NoteRepository(App.getDatabaseHolder())
 
         if (savedInstanceState == null) {
             supportFragmentManager
@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun getNoteRepository() : NoteRepository? {
-        return noteRepository;
+        return noteRepository
     }
 
     override fun onBackPressed() {

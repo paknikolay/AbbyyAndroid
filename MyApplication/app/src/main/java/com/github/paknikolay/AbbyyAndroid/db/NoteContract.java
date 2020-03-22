@@ -5,6 +5,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.github.paknikolay.AbbyyAndroid.ImageIdHolder;
+import com.github.paknikolay.AbbyyAndroid.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -18,7 +20,7 @@ public class NoteContract {
         String ID = "id";
         String TEXT = "text";
         String DATE =  "date";
-        String DRAWABLE_ID = "drawable_id";
+        String IMAGE_INDX = "image_indx";
     }
 
     private NoteContract() {
@@ -31,29 +33,26 @@ public class NoteContract {
                         + " ( "
                         + Columns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                         + Columns.ID + " INTEGER NOT NULL,"
-                        + Columns.DATE + " TEXT NOT NULL,"
+                        + Columns.DATE + " INTEGER NOT NULL,"
                         + Columns.TEXT + "  TEXT NOT NULL,"
-                        + Columns.DRAWABLE_ID + " INTEGER NOT NULL"
+                        + Columns.IMAGE_INDX + " INTEGER NOT NULL"
                         + ");"
         );
 
         for (int i = 0; i < 12; i++) {
-            String date = "22.02.1879 11:02:52";
+            long date =  System.currentTimeMillis();
             String text = "shiba" + i;
-            String imageName = "image_" + i + ".jpeg";
-
-            int imageId = context.getResources().getIdentifier("image_" + Long.toString(i), "drawable", context.getPackageName());
-
+            int imageIndx = i;
 
             db.execSQL("INSERT INTO " + TABLE_NAME + "("
                             + Columns.ID + ","
                             + Columns.TEXT + ","
-                            + Columns.DRAWABLE_ID + ","
+                            + Columns.IMAGE_INDX + ","
                             +  Columns.DATE + ")"
                     + " VALUES("
                     + i + ","
                     + "\"" + text + "\","
-                    + imageId + ","
+                    + imageIndx + ","
                     + "\"" + date + "\");");
         }
     }

@@ -26,8 +26,8 @@ public class NoteRepository {
             ContentValues contentValues = new ContentValues();
             contentValues.put(NoteContract.Columns.TEXT, note.getText());
             contentValues.put(NoteContract.Columns.ID, note.getId());
-            contentValues.put(NoteContract.Columns.DATE, note.getData().toString());
-            contentValues.put(NoteContract.Columns.DRAWABLE_ID, note.getDrawableId());
+            contentValues.put(NoteContract.Columns.DATE, note.getData());
+            contentValues.put(NoteContract.Columns.IMAGE_INDX, note.getImageIndx());
 
             database.insert(NoteContract.TABLE_NAME, null, contentValues);
         } finally {
@@ -44,7 +44,7 @@ public class NoteRepository {
                     NoteContract.TABLE_NAME,
                     new String[] {NoteContract.Columns._ID, NoteContract.Columns.ID,
                             NoteContract.Columns.TEXT, NoteContract.Columns.DATE,
-                            NoteContract.Columns.DRAWABLE_ID},
+                            NoteContract.Columns.IMAGE_INDX},
                     null,
                     null,
                     null,
@@ -53,19 +53,15 @@ public class NoteRepository {
             );
 
             while (cursor.moveToNext()) {
-                Note note = new Note();
-
-                note.setId(cursor.getLong(cursor.getColumnIndex(NoteContract.Columns.ID)));
-                String date = cursor.getString(cursor.getColumnIndex(NoteContract.Columns.DATE));
-                Date data = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").parse(date);
-                note.setData(data);
-                note.setDrawableId(cursor.getInt(cursor.getColumnIndex(NoteContract.Columns.DRAWABLE_ID)));
-                note.setText(cursor.getString(cursor.getColumnIndex(NoteContract.Columns.TEXT)));
-
+                Long date = cursor.getLong(cursor.getColumnIndex(NoteContract.Columns.DATE));
+                Note note = new Note(
+                        cursor.getLong(cursor.getColumnIndex(NoteContract.Columns.ID)),
+                        date,
+                        cursor.getString(cursor.getColumnIndex(NoteContract.Columns.TEXT)),
+                        cursor.getInt(cursor.getColumnIndex(NoteContract.Columns.IMAGE_INDX))
+                );
                 textList.put( note.getId(), note );
             }
-        } catch (ParseException e) {
-            e.printStackTrace();
         } finally {
             if (cursor != null) {
                 cursor.close();
@@ -78,7 +74,7 @@ public class NoteRepository {
         return new ArrayList(textList.values());
     }
 
-    public static Note GetNoteById(final long id) {
+    public static Note getNoteById(final long id) {
         return textList.get(id);
     }
 }

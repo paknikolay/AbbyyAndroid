@@ -1,5 +1,7 @@
 package com.github.paknikolay.AbbyyAndroid;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,9 +50,11 @@ public class NoteFragment extends Fragment {
         String title = getResources().getString(R.string.detailedNoteActivityTitle);
         ImageView imageView = view.findViewById(R.id.note_image);
         TextView textView = view.findViewById(R.id.note_text);
+        Bitmap image = BitmapFactory.decodeStream(getContext().getResources().openRawResource(
+                ImageIdHolder.getImageId(NoteRepository.getNoteById(id).getImageIndx())));
 
-        imageView.setImageDrawable(getResources().getDrawable(NoteRepository.GetNoteById(id).getDrawableId(), null));
-        textView.setText(NoteRepository.GetNoteById(id).getText());
+        imageView.setImageBitmap(image);
+        textView.setText(NoteRepository.getNoteById(id).getText());
 
         final String name = getArguments().getString(NAME_KEY);
     }

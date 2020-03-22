@@ -25,7 +25,6 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:src="@drawable/image_4"
             android:id="@+id/note_list_image"
             android:layout_width="@dimen/note_list_item_image_width"
             android:layout_height="@dimen/note_list_item_image_height"
