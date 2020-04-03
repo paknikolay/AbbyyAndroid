@@ -2,10 +2,12 @@ package com.github.paknikolay.AbbyyAndroid;
 
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
+import android.content.Intent
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
@@ -64,6 +66,12 @@ class NoteListFragment:Fragment(), NoteAdapter.Listener {
         loadData(recyclerView, this)
 
         val name = getArguments()?.getString(NAME_KEY)
+
+        val addNoteButton = view.findViewById<ImageView>(R.id.addNoteButton)
+        addNoteButton.setOnClickListener( { v : View ->
+            val intent = Intent(activity, NoteAddActivity::class.java );
+            startActivity(intent)
+        } )
     }
 
     fun loadData(recyclerView:RecyclerView, listener: NoteAdapter.Listener) = CoroutineScope(Dispatchers.Main).launch {

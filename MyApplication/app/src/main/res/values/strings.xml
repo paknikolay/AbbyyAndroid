@@ -32,4 +32,6 @@
     <string name="detailedNoteActivityTitle">Detailed Note</string>
     <string name="noteActivityTitle">Notes</string>
 
+    <string name="need_permission">Allow camera permission to use camera</string>
+    <string name="permission_in_settings">Allow camera permission in system settings</string>
 </resources>
