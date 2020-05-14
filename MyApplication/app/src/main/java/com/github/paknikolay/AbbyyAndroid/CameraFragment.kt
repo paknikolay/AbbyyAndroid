@@ -1,38 +1,25 @@
 package com.github.paknikolay.AbbyyAndroid;
 
 import android.Manifest
-import android.animation.AnimatorInflater;
-import android.animation.AnimatorSet;
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.os.AsyncTask
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView
 import android.widget.Toast
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.camera.core.ImageCapture
 import androidx.camera.view.CameraView
-import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import com.github.paknikolay.AbbyyAndroid.db.NoteRepository;
-import kotlinx.coroutines.*
 import java.io.File
-import java.io.FileOutputStream
-import java.lang.Thread.sleep
 import java.util.*
 
-class CameraFragment:Fragment(), ImageCapture.OnImageSavedListener  {
+class CameraFragment:Fragment(), ImageCapture.OnImageSavedListener {
     private val CAMERA_REQUEST_CODE = 0
 
     private var cameraView: CameraView? = null

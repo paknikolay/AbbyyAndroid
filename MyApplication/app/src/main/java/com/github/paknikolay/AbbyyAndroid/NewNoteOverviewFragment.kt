@@ -1,7 +1,6 @@
 package com.github.paknikolay.AbbyyAndroid;
 
-import android.database.Cursor
-import android.database.sqlite.SQLiteDatabase
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,10 +11,12 @@ import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.fragment.app.Fragment
 import com.github.paknikolay.AbbyyAndroid.db.Note
-import com.github.paknikolay.AbbyyAndroid.db.NoteContract
 import com.github.paknikolay.AbbyyAndroid.db.NoteRepository
+import com.google.firebase.ml.vision.FirebaseVision
+import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import com.squareup.picasso.Picasso
 import java.io.File
+
 
 class NewNoteOverviewFragment:Fragment() {
     companion object {
@@ -50,11 +51,24 @@ class NewNoteOverviewFragment:Fragment() {
         var imageView = getView()?.findViewById<ImageView>(R.id.cameraImage)
         Picasso.get().load(file).fit().centerInside().into(imageView)
 
-        val date = System.currentTimeMillis()
-        val text = "shibaNew"
-        //сохраним заметку
-        val id = NoteRepository(App.getDatabaseHolder()).create(Note(date, text, filePath!!), null)
-        getView()?.findViewById<TextView>(R.id.textFromCamera)?.setText( id.toString() )
+        val bitmap = BitmapFactory.decodeFile(filePath)
+        val image = FirebaseVisionImage.fromBitmap(bitmap)
+
+        val detector = FirebaseVision.getInstance().onDeviceTextRecognizer
+
+        val result = detector.processImage(image)
+            .addOnSuccessListener { firebaseVisionDocumentText ->
+                val text = firebaseVisionDocumentText.text.toString()
+                val date = System.currentTimeMillis()
+                //сохраним заметку
+                val id = NoteRepository(App.getDatabaseHolder()).create(Note(date, text, filePath!!), null)
+                //покажем текст заметки
+                getView()?.findViewById<TextView>(R.id.textFromCamera)?.setText( text )
+            }
+            .addOnFailureListener { e ->
+               e.printStackTrace()
+            }
+
 
     }
 }
