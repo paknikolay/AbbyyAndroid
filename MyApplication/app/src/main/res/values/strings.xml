@@ -34,4 +34,9 @@
 
     <string name="need_permission">Allow camera permission to use camera</string>
     <string name="permission_in_settings">Allow camera permission in system settings</string>
+    
+    <string name="popup_menu_first"> share </string>
+    <string name="popup_menu_second"> internet </string>
+    <string name="popup_menu_third"> delete </string>
+    <string name="vertical_ellipsis">&#8942;</string>
 </resources>

@@ -3,6 +3,9 @@ package com.github.paknikolay.AbbyyAndroid
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.github.paknikolay.AbbyyAndroid.db.NoteRepository
 
@@ -46,6 +49,20 @@ class MainActivity : AppCompatActivity() {
         } else {
             super.onBackPressed()
         }
+    }
+    fun showPopUpMenu(view: View) {
+        val popupMenu = PopupMenu(this, view)
+        popupMenu.inflate(R.menu.popupmenu)
+        popupMenu.setOnMenuItemClickListener { item ->
+            when(item.itemId) {
+                R.id.popup_menu_first -> Toast.makeText(this, R.string.popup_menu_first, Toast.LENGTH_SHORT).show()
+                R.id.popup_menu_third -> Toast.makeText(this, R.string.popup_menu_third, Toast.LENGTH_SHORT).show()
+                R.id.popup_menu_second -> Toast.makeText(this, R.string.popup_menu_second, Toast.LENGTH_SHORT).show()
+
+            }
+            return@setOnMenuItemClickListener true
+        }
+        popupMenu.show()
     }
 }
 
