@@ -7,7 +7,9 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.github.paknikolay.AbbyyAndroid.db.Note
+import java.io.File
 import java.text.SimpleDateFormat
+import com.squareup.picasso.Picasso
 
 
 class NoteViewHolder(
@@ -26,11 +28,11 @@ class NoteViewHolder(
         noteNameTextView.setText(note.text)
         id = note.id
         val formater = SimpleDateFormat("dd/M/yyyy hh:mm:ss")
-        val currentDate = formater.format(note.data)
+        val currentDate = formater.format(note.date)
         dataView.text = currentDate
         cardView.setOnClickListener { listener.onNoteClick(cardView, id) }
-        val image = BitmapFactory.decodeStream(itemView_.resources.openRawResource(
-            ImageIdHolder.getImageId(note.imageIndx)))
-        imageView.setImageBitmap(image)
+        val file = File(note.imagePath)
+
+        Picasso.get().load(file).fit().centerInside().into(imageView)
     }
 }

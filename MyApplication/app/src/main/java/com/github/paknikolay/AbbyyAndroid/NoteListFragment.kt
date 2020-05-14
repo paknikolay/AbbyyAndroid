@@ -33,10 +33,7 @@ class NoteListFragment:Fragment(), NoteAdapter.Listener {
             fragment.setArguments(arguments);
             return fragment;
         }
-
-
     }
-
 
     @Nullable
     override fun onCreateView(inflater: LayoutInflater,
@@ -63,7 +60,6 @@ class NoteListFragment:Fragment(), NoteAdapter.Listener {
         }
         recyclerView.setHasFixedSize(true)
         recyclerView.getRecycledViewPool().setMaxRecycledViews(0, 15)
-        loadData(recyclerView, this)
 
         val name = getArguments()?.getString(NAME_KEY)
 
@@ -72,6 +68,13 @@ class NoteListFragment:Fragment(), NoteAdapter.Listener {
             val intent = Intent(activity, NoteAddActivity::class.java );
             startActivity(intent)
         } )
+    }
+
+    @Override
+    override fun onResume() {
+        super.onResume()
+        val recyclerView = view!!.findViewById<RecyclerView>(R.id.NoteRecyclerView)
+        loadData(recyclerView, this)
     }
 
     fun loadData(recyclerView:RecyclerView, listener: NoteAdapter.Listener) = CoroutineScope(Dispatchers.Main).launch {

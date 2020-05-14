@@ -12,6 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import com.github.paknikolay.AbbyyAndroid.db.NoteRepository;
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
 
 
 public class NoteFragment extends Fragment {
@@ -50,10 +53,8 @@ public class NoteFragment extends Fragment {
         String title = getResources().getString(R.string.detailedNoteActivityTitle);
         ImageView imageView = view.findViewById(R.id.note_image);
         TextView textView = view.findViewById(R.id.note_text);
-        Bitmap image = BitmapFactory.decodeStream(getContext().getResources().openRawResource(
-                ImageIdHolder.getImageId(NoteRepository.getNoteById(id).getImageIndx())));
-
-        imageView.setImageBitmap(image);
+        File file = new File(NoteRepository.getNoteById(id).getImagePath());
+        Picasso.get().load(file).fit().centerInside().into(imageView);
         textView.setText(NoteRepository.getNoteById(id).getText());
 
         final String name = getArguments().getString(NAME_KEY);

@@ -19,20 +19,34 @@ public class NoteRepository {
         this.databaseHolder = databaseHolder;
     }
 
-    public void create(@NonNull final Note note) {
+    public long create(@NonNull final Note note, final SQLiteDatabase db) {
+        long id = note.getId();
         try {
-            SQLiteDatabase database = databaseHolder.open();
 
+            SQLiteDatabase database;
+            if (db == null) {
+                database = databaseHolder.open();
+            } else {
+                database = db;
+            }
             ContentValues contentValues = new ContentValues();
             contentValues.put(NoteContract.Columns.TEXT, note.getText());
-            contentValues.put(NoteContract.Columns.ID, note.getId());
-            contentValues.put(NoteContract.Columns.DATE, note.getData());
-            contentValues.put(NoteContract.Columns.IMAGE_INDX, note.getImageIndx());
+            if( id != -1 ) {
+                contentValues.put(NoteContract.Columns.ID, note.getId());
+            }
+          //  contentValues.put(NoteContract.Columns.ID, 13);
+            contentValues.put(NoteContract.Columns.DATE, note.getDate());
+            contentValues.put(NoteContract.Columns.IMAGE_PATH, note.getImagePath());
 
-            database.insert(NoteContract.TABLE_NAME, null, contentValues);
+            id = database.insertOrThrow(NoteContract.TABLE_NAME, null, contentValues);
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
-            databaseHolder.close();
+            if (db == null) {
+                databaseHolder.close();
+            }
         }
+        return id;
     }
 
     public void loadAll() {
@@ -42,9 +56,9 @@ public class NoteRepository {
 
             cursor = database.query(
                     NoteContract.TABLE_NAME,
-                    new String[] {NoteContract.Columns._ID, NoteContract.Columns.ID,
+                    new String[] {NoteContract.Columns.ID,
                             NoteContract.Columns.TEXT, NoteContract.Columns.DATE,
-                            NoteContract.Columns.IMAGE_INDX},
+                            NoteContract.Columns.IMAGE_PATH},
                     null,
                     null,
                     null,
@@ -55,10 +69,10 @@ public class NoteRepository {
             while (cursor.moveToNext()) {
                 Long date = cursor.getLong(cursor.getColumnIndex(NoteContract.Columns.DATE));
                 Note note = new Note(
-                        cursor.getLong(cursor.getColumnIndex(NoteContract.Columns.ID)),
                         date,
                         cursor.getString(cursor.getColumnIndex(NoteContract.Columns.TEXT)),
-                        cursor.getInt(cursor.getColumnIndex(NoteContract.Columns.IMAGE_INDX))
+                        cursor.getString(cursor.getColumnIndex(NoteContract.Columns.IMAGE_PATH)),
+                        cursor.getLong(cursor.getColumnIndex(NoteContract.Columns.ID))
                 );
                 textList.put( note.getId(), note );
             }
