@@ -83,11 +83,16 @@ class NoteListFragment:Fragment(), NoteAdapter.Listener, NoteAdapter.MenuListene
         } )
     }
 
+    fun updateData() {
+        val recyclerView = view!!.findViewById<RecyclerView>(R.id.NoteRecyclerView)
+        loadData(recyclerView, this, this)
+    }
+
     @Override
     override fun onResume() {
         super.onResume()
-        val recyclerView = view!!.findViewById<RecyclerView>(R.id.NoteRecyclerView)
-        loadData(recyclerView, this, this)
+        NoteRepository.resetStorageCache()
+        updateData()
     }
 
     fun loadData(recyclerView:RecyclerView,
@@ -127,7 +132,7 @@ class NoteListFragment:Fragment(), NoteAdapter.Listener, NoteAdapter.MenuListene
                     .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
                     context!!.startActivity(intent);
-                    Toast.makeText(context, R.string.popup_menu_first, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, R.string.shared, Toast.LENGTH_SHORT).show()
                 }
 
                 R.id.popup_menu_third -> {
@@ -140,6 +145,7 @@ class NoteListFragment:Fragment(), NoteAdapter.Listener, NoteAdapter.MenuListene
 
                             NoteRepository(App.getDatabaseHolder()).delete(note, null)
                             Toast.makeText(context, R.string.deleted, Toast.LENGTH_SHORT).show()
+                            updateData()
 
                         })
                         .setNegativeButton(R.string.no, DialogInterface.OnClickListener() {
@@ -150,6 +156,7 @@ class NoteListFragment:Fragment(), NoteAdapter.Listener, NoteAdapter.MenuListene
 
                     dialog?.show()
                 }
+
                 R.id.popup_menu_second -> Toast.makeText(context, R.string.popup_menu_second, Toast.LENGTH_SHORT).show()
 
             }

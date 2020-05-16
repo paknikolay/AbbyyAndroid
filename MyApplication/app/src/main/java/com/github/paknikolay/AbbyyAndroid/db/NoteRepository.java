@@ -112,6 +112,10 @@ public class NoteRepository {
         return new ArrayList(textList.values());
     }
 
+    public static void resetStorageCache() {
+        textList.clear();
+    }
+
     public static Note getNoteById(final long id) {
         return textList.get(id);
     }
