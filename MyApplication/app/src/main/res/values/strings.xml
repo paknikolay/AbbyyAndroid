@@ -35,8 +35,17 @@
     <string name="need_permission">Allow camera permission to use camera</string>
     <string name="permission_in_settings">Allow camera permission in system settings</string>
     
-    <string name="popup_menu_first"> share </string>
-    <string name="popup_menu_second"> internet </string>
-    <string name="popup_menu_third"> delete </string>
+    <string name="popup_menu_first"> Share </string>
+    <string name="popup_menu_second"> Edit </string>
+    <string name="popup_menu_third"> Delete </string>
     <string name="vertical_ellipsis">&#8942;</string>
+    
+    <string name="delete"> Delete </string>
+    <string name="confirmation"> Are sure? </string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="deleted">Deleted</string>
+    <string name="canceled">Canceled</string>
+    <string name="save">Save</string>
+    <string name="saved">Saved</string>
 </resources>

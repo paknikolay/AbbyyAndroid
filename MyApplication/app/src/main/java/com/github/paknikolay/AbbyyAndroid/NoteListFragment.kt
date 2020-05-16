@@ -2,6 +2,8 @@ package com.github.paknikolay.AbbyyAndroid;
 
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
+import android.app.Dialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,18 +12,24 @@ import android.view.ViewGroup;
 import android.widget.ImageView
 import android.widget.PopupMenu
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import com.github.paknikolay.AbbyyAndroid.db.Note
 import com.github.paknikolay.AbbyyAndroid.db.NoteRepository;
 import kotlinx.coroutines.*
 import java.lang.Thread.sleep
 
-class NoteListFragment:Fragment(), NoteAdapter.Listener {
+class NoteListFragment:Fragment(), NoteAdapter.Listener, NoteAdapter.MenuListener {
+
+    var dialog : Dialog? = null
+
     companion object {
         val TAG:String = "NoteListFragment"
 
@@ -76,10 +84,13 @@ class NoteListFragment:Fragment(), NoteAdapter.Listener {
     override fun onResume() {
         super.onResume()
         val recyclerView = view!!.findViewById<RecyclerView>(R.id.NoteRecyclerView)
-        loadData(recyclerView, this)
+        loadData(recyclerView, this, this)
     }
 
-    fun loadData(recyclerView:RecyclerView, listener: NoteAdapter.Listener) = CoroutineScope(Dispatchers.Main).launch {
+    fun loadData(recyclerView:RecyclerView,
+                 listener: NoteAdapter.Listener,
+                 menuListener: NoteAdapter.MenuListener)
+            = CoroutineScope(Dispatchers.Main).launch {
 
         val task = async(Dispatchers.IO) {
             (activity as MainActivity).getNoteRepository()?.loadAll()
@@ -89,6 +100,7 @@ class NoteListFragment:Fragment(), NoteAdapter.Listener {
         recyclerView.setAdapter(adapter)
         adapter.setNoteList(NoteRepository.getTextList())
         adapter.setListener(listener)
+        adapter.setMenuListener(menuListener)
     }
 
     override fun onNoteClick(cardView:CardView, id:Long) {
@@ -96,6 +108,39 @@ class NoteListFragment:Fragment(), NoteAdapter.Listener {
         (getActivity() as MainActivity).showDetailFragment("NoteFragment", id)
     }
 
+    override fun onMenuClick(view: View, note: Note) {
+        val popupMenu = PopupMenu(context, view)
+        popupMenu.inflate(R.menu.popupmenu)
+        popupMenu.setOnMenuItemClickListener { item ->
+            when(item.itemId) {
+                R.id.popup_menu_first -> Toast.makeText(context, R.string.popup_menu_first, Toast.LENGTH_SHORT).show()
+                R.id.popup_menu_third -> {
+                    dialog = AlertDialog
+                        .Builder(context!!)
+                        .setTitle(R.string.delete)
+                        .setMessage(R.string.confirmation)
+                        .setPositiveButton(R.string.yes, DialogInterface.OnClickListener() {
+                                dialog, which ->
+
+                            NoteRepository(App.getDatabaseHolder()).delete(note, null)
+                            Toast.makeText(context, R.string.deleted, Toast.LENGTH_SHORT).show()
+
+                        })
+                        .setNegativeButton(R.string.no, DialogInterface.OnClickListener() {
+                                dialog, which ->
+                            Toast.makeText(context, R.string.canceled, Toast.LENGTH_SHORT).show()
+                        })
+                        .create()
+                    
+                    dialog?.show()
+                }
+                R.id.popup_menu_second -> Toast.makeText(context, R.string.popup_menu_second, Toast.LENGTH_SHORT).show()
+
+            }
+            return@setOnMenuItemClickListener true
+        }
+        popupMenu.show()
+    }
     private fun startAnimationViaAnimator(cardView:CardView) {
         val set = AnimatorInflater.loadAnimator(getActivity(), R.animator.animation) as AnimatorSet
         set.setTarget(cardView)

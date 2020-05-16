@@ -1,6 +1,7 @@
 package com.github.paknikolay.AbbyyAndroid
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
@@ -14,11 +15,21 @@ class NoteAdapter : RecyclerView.Adapter<NoteViewHolder>() {
         fun onNoteClick(cardView: CardView, id: Long)
     }
 
+    interface MenuListener {
+        fun onMenuClick(view: View, note: Note)
+    }
+
     private var noteList: List<Note> = mutableListOf()
     private var listener: Listener? = null
+    private var menuListener: MenuListener? = null
+
 
     fun setListener(listener: Listener) {
         this.listener = listener
+    }
+
+    fun setMenuListener(listener: MenuListener) {
+        this.menuListener = listener
     }
 
     fun setNoteList(noteList: List<Note>) {
@@ -33,7 +44,7 @@ class NoteAdapter : RecyclerView.Adapter<NoteViewHolder>() {
             parent,
             false
         )
-        return NoteViewHolder(view, listener!!)//.?
+        return NoteViewHolder(view, listener!!, menuListener!!)
     }
 
     override fun onBindViewHolder(holder: NoteViewHolder, position: Int) {

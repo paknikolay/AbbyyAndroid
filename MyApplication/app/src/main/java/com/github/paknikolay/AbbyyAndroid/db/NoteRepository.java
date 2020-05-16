@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import androidx.annotation.NonNull;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -47,6 +48,29 @@ public class NoteRepository {
             }
         }
         return id;
+    }
+
+    public void delete(@NonNull final Note note, final SQLiteDatabase db) {
+        try {
+
+            SQLiteDatabase database;
+            if (db == null) {
+                database = databaseHolder.open();
+            } else {
+                database = db;
+            }
+
+            new File(note.getImagePath()).delete();
+
+            database.delete(NoteContract.TABLE_NAME, NoteContract.Columns.ID + "=" +
+                    Long.toString(note.getId()), null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (db == null) {
+                databaseHolder.close();
+            }
+        }
     }
 
     public void loadAll() {

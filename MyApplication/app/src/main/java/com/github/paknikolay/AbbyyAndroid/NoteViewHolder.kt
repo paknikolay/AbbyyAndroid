@@ -14,13 +14,15 @@ import com.squareup.picasso.Picasso
 
 class NoteViewHolder(
     private var itemView_: View,
-    private var listener: NoteAdapter.Listener
+    private var listener: NoteAdapter.Listener,
+    private var menuListener : NoteAdapter.MenuListener
 ) : RecyclerView.ViewHolder(itemView_) {
 
     private var cardView: CardView = itemView_.findViewById(R.id.cardView)
     private var noteNameTextView: TextView = itemView_.findViewById(R.id.note_list_text)
     private var dataView: TextView = itemView_.findViewById<TextView>(R.id.note_list_data)
     private var imageView: ImageView = itemView_.findViewById<ImageView>(R.id.note_list_image)
+    private var menuBotton : TextView = itemView_.findViewById<TextView>(R.id.popMenuBotton)
 
     private var id: Long = 0
 
@@ -31,6 +33,7 @@ class NoteViewHolder(
         val currentDate = formater.format(note.date)
         dataView.text = currentDate
         cardView.setOnClickListener { listener.onNoteClick(cardView, id) }
+        menuBotton.setOnClickListener { menuListener.onMenuClick(menuBotton, note) }
         val file = File(note.imagePath)
 
         Picasso.get().load(file).fit().centerInside().into(imageView)
