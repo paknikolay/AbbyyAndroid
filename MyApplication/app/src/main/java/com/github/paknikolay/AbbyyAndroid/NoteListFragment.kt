@@ -17,6 +17,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog
 import androidx.cardview.widget.CardView;
+import androidx.core.app.ShareCompat
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -24,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.github.paknikolay.AbbyyAndroid.db.Note
 import com.github.paknikolay.AbbyyAndroid.db.NoteRepository;
 import kotlinx.coroutines.*
+import java.io.File
 import java.lang.Thread.sleep
 
 class NoteListFragment:Fragment(), NoteAdapter.Listener, NoteAdapter.MenuListener {
@@ -113,7 +116,20 @@ class NoteListFragment:Fragment(), NoteAdapter.Listener, NoteAdapter.MenuListene
         popupMenu.inflate(R.menu.popupmenu)
         popupMenu.setOnMenuItemClickListener { item ->
             when(item.itemId) {
-                R.id.popup_menu_first -> Toast.makeText(context, R.string.popup_menu_first, Toast.LENGTH_SHORT).show()
+                R.id.popup_menu_first -> {
+                    val file = File(note.imagePath)
+                    val uri = FileProvider.getUriForFile(context!!, "com.github.paknikolay.AbbyyAndroid", file);
+                    val intent = ShareCompat.IntentBuilder.from(activity)
+                    .setType("bynary/binaryImage")
+                    .setStream(uri)
+                    .setChooserTitle("binaryImage")
+                    .createChooserIntent()
+                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                    context!!.startActivity(intent);
+                    Toast.makeText(context, R.string.popup_menu_first, Toast.LENGTH_SHORT).show()
+                }
+
                 R.id.popup_menu_third -> {
                     dialog = AlertDialog
                         .Builder(context!!)
@@ -131,7 +147,7 @@ class NoteListFragment:Fragment(), NoteAdapter.Listener, NoteAdapter.MenuListene
                             Toast.makeText(context, R.string.canceled, Toast.LENGTH_SHORT).show()
                         })
                         .create()
-                    
+
                     dialog?.show()
                 }
                 R.id.popup_menu_second -> Toast.makeText(context, R.string.popup_menu_second, Toast.LENGTH_SHORT).show()
