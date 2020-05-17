@@ -25,7 +25,6 @@
         android:layout_height="match_parent">
 
         <ImageView
-            android:src="@drawable/image_4"
             android:id="@+id/note_list_image"
             android:layout_width="@dimen/note_list_item_image_width"
             android:layout_height="@dimen/note_list_item_image_height"
@@ -64,6 +63,15 @@
             android:ellipsize="end"
             android:maxLines="4"
             />
+        <TextView
+            android:id="@+id/popMenuBotton"
+            android:layout_width="16dp"
+            android:layout_height="16dp" android:text="@string/vertical_ellipsis"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+        ></TextView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
 

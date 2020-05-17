@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NoteActivity">
+    android:clickable="true"
+    android:background="@color/colorWhite"
+>
 
     <ImageView
         android:id="@+id/note_image"
@@ -16,26 +18,38 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/note_text"
+        app:layout_constraintBottom_toTopOf="@id/note_text_edit"
         android:layout_marginBottom="@dimen/standard_margin"
         android:layout_marginTop="@dimen/standard_margin"
         android:layout_marginStart="@dimen/standard_margin"
         android:layout_marginEnd="@dimen/standard_margin"
         />
-    <TextView
-        android:id="@+id/note_text"
+    <EditText
+        android:id="@+id/note_text_edit"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="@dimen/standard_margin"
         android:layout_marginTop="@dimen/standard_margin"
         android:layout_marginStart="@dimen/standard_margin"
         android:layout_marginEnd="@dimen/standard_margin"
-        android:text="@string/text_1"
+        tools:text="@string/text_1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/note_image"
-        app:layout_constraintBottom_toBottomOf="parent"
-
+        app:layout_constraintBottom_toTopOf="@+id/note_edit_save_botton"
         />
 
+    <Button
+        android:id="@+id/note_edit_save_botton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/save"
+        android:layout_marginBottom="@dimen/standard_margin"
+        android:layout_marginTop="@dimen/standard_margin"
+        android:layout_marginStart="@dimen/standard_margin"
+        android:layout_marginEnd="@dimen/standard_margin"
+        tools:text="@string/text_1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+    />
 </androidx.constraintlayout.widget.ConstraintLayout>

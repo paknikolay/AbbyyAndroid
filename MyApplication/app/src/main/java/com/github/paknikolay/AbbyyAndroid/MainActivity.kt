@@ -1,47 +1,80 @@
 package com.github.paknikolay.AbbyyAndroid
 
-import android.animation.AnimatorInflater
-import android.animation.AnimatorSet
+import android.app.Dialog
+import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.cardview.widget.CardView
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import android.view.View
+import android.widget.PopupMenu
+import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
+import com.github.paknikolay.AbbyyAndroid.db.NoteRepository
 
 
-class MainActivity : AppCompatActivity(), NoteAdapter.Listener {
+class MainActivity : AppCompatActivity() {
+    private var noteRepository : NoteRepository? = null
+
+    fun getFragment(name: String) : Fragment? {
+        return supportFragmentManager.findFragmentByTag(name)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        title = resources.getString(R.string.noteActivityTitle);
 
-        var recyclerView = findViewById<RecyclerView>(R.id.NoteRecyclerView)
+        noteRepository = NoteRepository(App.getDatabaseHolder())
 
-        recyclerView.setLayoutManager(LinearLayoutManager(this))
-        recyclerView.setHasFixedSize(true)
-        recyclerView.recycledViewPool.setMaxRecycledViews(0, 15)
-
-        val adapter = NoteAdapter()
-        recyclerView.setAdapter(adapter)
-        adapter.setNoteList(NoteRepository.getTextList())
-        adapter.setListener(this)
-
+        if (savedInstanceState == null) {
+            supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.listNoteContainer, NoteListFragment.newInstance("ListNoteFragment"), NoteListFragment.TAG)
+                .addToBackStack(null)
+                .commit()
+        }
     }
 
-    override fun onNoteClick(cardView: CardView, id: Long) {
-        startAnimationViaAnimator(cardView);
+    fun showDetailFragment(name: String, id:Long) {
+        if (supportFragmentManager.findFragmentByTag(NoteFragment.TAG) != null) { // Если на экране уже есть фрагмент с деталями, то надо его убрать перед показом нового
+            supportFragmentManager.popBackStack()
+        }
 
-        val intent = Intent(this, NoteActivity::class.java);
-        intent.putExtra("id", id);
-        startActivity(intent)
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.noteContainer, NoteFragment.newInstance(name, id), NoteFragment.TAG)
+            .addToBackStack(null)
+            .commit()
     }
 
-    private fun startAnimationViaAnimator(cardView: CardView) {
-        val set = AnimatorInflater.loadAnimator(this, R.animator.animation) as AnimatorSet
-        set.setTarget(cardView)
-        set.start()
+    fun showEditFragment(name: String, id:Long) {
+        if (supportFragmentManager.findFragmentByTag(NoteEditFragment.TAG) != null ||
+            supportFragmentManager.findFragmentByTag(NoteFragment.TAG) != null  ) {
+            supportFragmentManager.popBackStack()
+        }
+
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.noteContainer, NoteEditFragment.newInstance(name, id), NoteEditFragment.TAG)
+            .addToBackStack(null)
+            .commit()
+    }
+
+    fun getNoteRepository() : NoteRepository? {
+        return noteRepository
+    }
+
+    override fun onBackPressed() {
+        if (supportFragmentManager.backStackEntryCount == 1) {
+            finish()
+        } else {
+            super.onBackPressed()
+        }
+    }
+    fun showPopUpMenu(view: View) {
+
     }
 }
 
