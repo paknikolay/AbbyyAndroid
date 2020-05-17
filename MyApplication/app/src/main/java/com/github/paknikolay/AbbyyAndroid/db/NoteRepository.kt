@@ -7,8 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import androidx.annotation.NonNull;
 
 import java.io.File;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+
 import java.util.*;
 
 public class NoteRepository {
