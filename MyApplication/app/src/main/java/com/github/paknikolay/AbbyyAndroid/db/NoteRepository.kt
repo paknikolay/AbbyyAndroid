@@ -5,99 +5,106 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import androidx.annotation.NonNull;
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 import java.io.File;
 
 import java.util.*;
 
-public class NoteRepository {
-    private static Map<Long, Note> textList = new HashMap<>();
+class NoteRepository (
+    private var databaseHolder : DatabaseHolder
+){
+    companion object {
+        val textList = HashMap<Long, Note>()
+        fun getTextList():List<Note> {
+            return ArrayList(textList.values);
+        }
 
-    private DatabaseHolder databaseHolder;
-
-    public NoteRepository(@NonNull final DatabaseHolder databaseHolder) {
-        this.databaseHolder = databaseHolder;
+        fun getNoteById(id : Long) :Note {
+            return textList.get(id)!!
+        }
     }
 
-    public long create(@NonNull final Note note, final SQLiteDatabase db) {
-        long id = note.getId();
+    fun create(@NonNull note:Note, db : SQLiteDatabase?) : Long {
+        var id = note.id
         try {
-
-            SQLiteDatabase database;
+            var database : SQLiteDatabase? =  null
             if (db == null) {
                 database = databaseHolder.open();
             } else {
                 database = db;
             }
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(NoteContract.Columns.TEXT, note.getText());
-            if( id != -1 ) {
-                contentValues.put(NoteContract.Columns.ID, note.getId());
+            val contentValues:ContentValues  = ContentValues()
+            contentValues.put(NoteContract.Columns.TEXT, note.text)
+            if( id != -1L ) {
+                contentValues.put(NoteContract.Columns.ID, note.id);
             }
-            contentValues.put(NoteContract.Columns.DATE, note.getDate());
-            contentValues.put(NoteContract.Columns.IMAGE_PATH, note.getImagePath());
+            contentValues.put(NoteContract.Columns.DATE, note.date);
+            contentValues.put(NoteContract.Columns.IMAGE_PATH, note.imagePath);
 
-            id = database.insertOrThrow(NoteContract.TABLE_NAME, null, contentValues);
+            id = database!!.insertOrThrow(NoteContract.TABLE_NAME, null, contentValues);
 
-            Note newNote = new Note(note.getDate(), note.getText(), note.getImagePath(), id);
+            val newNote:Note  = Note(note.date, note.text, note.imagePath, id);
             textList.put(id, newNote);
-        } catch (Exception e) {
+        } catch (e:Exception) {
             e.printStackTrace();
         } finally {
             if (db == null) {
                 databaseHolder.close();
             }
         }
-        return id;
+        return id
     }
 
-    public void update(@NonNull final Note note, final SQLiteDatabase db) {
-        assert (note.getId() != -1);
+    fun update(@NonNull note:Note, db:SQLiteDatabase?) {
+        assert (note.id != -1L);
         try {
-
-            SQLiteDatabase database;
+            var database : SQLiteDatabase? =  null
             if (db == null) {
                 database = databaseHolder.open();
             } else {
                 database = db;
             }
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(NoteContract.Columns.TEXT, note.getText());
-            contentValues.put(NoteContract.Columns.ID, note.getId());
+            val contentValues:ContentValues  = ContentValues()
+            contentValues.put(NoteContract.Columns.TEXT, note.text)
+            contentValues.put(NoteContract.Columns.ID, note.id)
 
-            contentValues.put(NoteContract.Columns.DATE, note.getDate());
-            contentValues.put(NoteContract.Columns.IMAGE_PATH, note.getImagePath());
+            contentValues.put(NoteContract.Columns.DATE, note.date)
+            contentValues.put(NoteContract.Columns.IMAGE_PATH, note.imagePath)
 
-            int affected = database.update(NoteContract.TABLE_NAME, contentValues, NoteContract.Columns.ID + "= ?", new String[]{Long.toString(note.getId())});
+            val affected = database!!.update(NoteContract.TABLE_NAME, contentValues, NoteContract.Columns.ID + "= ?", arrayOf(note.id.toString()))
             assert (affected == 1);
-            textList.remove(note.getId());
-            textList.put(note.getId(), note);
-        } catch (Exception e) {
+            textList.remove(note.id);
+            textList.put(note.id, note);
+        } catch (e:Exception) {
             e.printStackTrace();
         } finally {
             if (db == null) {
-                databaseHolder.close();
+                databaseHolder.close()
             }
         }
     }
 
-    public void delete(@NonNull final Long id, final SQLiteDatabase db) {
+    fun delete(@NonNull id:Long, db:SQLiteDatabase?) {
         try {
 
-            SQLiteDatabase database;
+            var database : SQLiteDatabase? =  null
             if (db == null) {
                 database = databaseHolder.open();
             } else {
                 database = db;
             }
 
-            new File(NoteRepository.getNoteById(id).getImagePath()).delete();
+            File(NoteRepository.getNoteById(id).imagePath).delete();
 
-            database.delete(NoteContract.TABLE_NAME, NoteContract.Columns.ID + "=" +
-                    Long.toString(NoteRepository.getNoteById(id).getId()), null);
+            database!!.delete(NoteContract.TABLE_NAME, NoteContract.Columns.ID + "=" +
+                    id.toString(), null);
             textList.remove(id);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (e:Exception) {
+            e.printStackTrace()
         } finally {
             if (db == null) {
                 databaseHolder.close();
@@ -105,16 +112,16 @@ public class NoteRepository {
         }
     }
 
-    public void loadAll() {
-        Cursor cursor = null;
+    suspend fun loadAll() {
+        var cursor : Cursor?  = null;
         try {
-            SQLiteDatabase database = databaseHolder.open();
+            val database : SQLiteDatabase  = databaseHolder.open()
 
             cursor = database.query(
                     NoteContract.TABLE_NAME,
-                    new String[] {NoteContract.Columns.ID,
+                arrayOf(NoteContract.Columns.ID,
                             NoteContract.Columns.TEXT, NoteContract.Columns.DATE,
-                            NoteContract.Columns.IMAGE_PATH},
+                            NoteContract.Columns.IMAGE_PATH),
                     null,
                     null,
                     null,
@@ -123,14 +130,14 @@ public class NoteRepository {
             );
 
             while (cursor.moveToNext()) {
-                Long date = cursor.getLong(cursor.getColumnIndex(NoteContract.Columns.DATE));
-                Note note = new Note(
+                val date = cursor.getLong(cursor.getColumnIndex(NoteContract.Columns.DATE));
+                val note = Note(
                         date,
                         cursor.getString(cursor.getColumnIndex(NoteContract.Columns.TEXT)),
                         cursor.getString(cursor.getColumnIndex(NoteContract.Columns.IMAGE_PATH)),
                         cursor.getLong(cursor.getColumnIndex(NoteContract.Columns.ID))
                 );
-                textList.put( note.getId(), note );
+                textList.put( note.id, note );
             }
         } finally {
             if (cursor != null) {
@@ -140,15 +147,5 @@ public class NoteRepository {
         }
     }
 
-    public static List<Note> getTextList() {
-        return new ArrayList(textList.values());
-    }
 
-    public static void resetStorageCache() {
-        textList.clear();
-    }
-
-    public static Note getNoteById(final long id) {
-        return textList.get(id);
-    }
 }

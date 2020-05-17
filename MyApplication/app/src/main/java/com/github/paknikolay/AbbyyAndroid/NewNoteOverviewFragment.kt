@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.fragment.app.Fragment
@@ -15,6 +16,10 @@ import com.github.paknikolay.AbbyyAndroid.db.NoteRepository
 import com.google.firebase.ml.vision.FirebaseVision
 import com.google.firebase.ml.vision.common.FirebaseVisionImage
 import com.squareup.picasso.Picasso
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import java.io.File
 
 
@@ -43,6 +48,13 @@ class NewNoteOverviewFragment:Fragment() {
         return inflater.inflate(R.layout.new_note_overview_fragment, container, false)
     }
 
+    fun createNote(note:Note) = CoroutineScope(Dispatchers.Main).launch {
+        val task = async(Dispatchers.IO) {
+            val id = NoteRepository(App.getDatabaseHolder()).create(note, null)
+
+        }
+    }
+
     @Override
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -61,7 +73,7 @@ class NewNoteOverviewFragment:Fragment() {
                 val text = firebaseVisionDocumentText.text.toString()
                 val date = System.currentTimeMillis()
                 //сохраним заметку
-                val id = NoteRepository(App.getDatabaseHolder()).create(Note(date, text, filePath!!), null)
+                createNote(Note(date, text, filePath!!) )
                 //покажем текст заметки
                 getView()?.findViewById<TextView>(R.id.textFromCamera)?.setText( text )
             }

@@ -53,9 +53,9 @@ public class NoteFragment extends Fragment {
         String title = getResources().getString(R.string.detailedNoteActivityTitle);
         ImageView imageView = view.findViewById(R.id.note_image);
         TextView textView = view.findViewById(R.id.note_text);
-        File file = new File(NoteRepository.getNoteById(id).getImagePath());
+        File file = new File(NoteRepository.Companion.getNoteById(id).getImagePath());
         Picasso.get().load(file).fit().centerInside().into(imageView);
-        textView.setText(NoteRepository.getNoteById(id).getText());
+        textView.setText(NoteRepository.Companion.getNoteById(id).getText());
 
         final String name = getArguments().getString(NAME_KEY);
     }

@@ -73,8 +73,14 @@ class NoteListFragment:Fragment(), NoteAdapter.Listener, NoteAdapter.MenuListene
         }
         recyclerView.setHasFixedSize(true)
         recyclerView.getRecycledViewPool().setMaxRecycledViews(0, 15)
+        val adapter = NoteAdapter()
+        recyclerView.setAdapter(adapter)
+        adapter.setNoteList(NoteRepository.getTextList())
+        adapter.setListener(this)
+        adapter.setMenuListener(this)
 
-        loadData(recyclerView, this, this)
+        loadData(recyclerView)
+
 
         val name = getArguments()?.getString(NAME_KEY)
 
@@ -96,29 +102,34 @@ class NoteListFragment:Fragment(), NoteAdapter.Listener, NoteAdapter.MenuListene
     @Override
     override fun onResume() {
         super.onResume()
-        //NoteRepository.resetStorageCache()
         updateData()
     }
 
-    fun loadData(recyclerView:RecyclerView,
-                 listener: NoteAdapter.Listener,
-                 menuListener: NoteAdapter.MenuListener)
+    fun loadData(recyclerView:RecyclerView)
             = CoroutineScope(Dispatchers.Main).launch {
 
         val task = async(Dispatchers.IO) {
             (activity as MainActivity).getNoteRepository()?.loadAll()
         }
-        task.join()
-        val adapter = NoteAdapter()
-        recyclerView.setAdapter(adapter)
-        adapter.setNoteList(NoteRepository.getTextList())
-        adapter.setListener(listener)
-        adapter.setMenuListener(menuListener)
+        task.await()
+        updateData()
+
     }
 
     override fun onNoteClick(cardView:CardView, id:Long) {
         startAnimationViaAnimator(cardView)
         (getActivity() as MainActivity).showDetailFragment("NoteFragment", id)
+    }
+
+    fun deleteNote(id:Long) = CoroutineScope(Dispatchers.Main).launch {
+
+        val task = async(Dispatchers.IO) {
+            NoteRepository(App.getDatabaseHolder()).delete(id, null)
+        }
+
+        task.await()
+        Toast.makeText(context, R.string.deleted, Toast.LENGTH_SHORT).show()
+        updateData()
     }
 
     override fun onMenuClick(view: View, id: Long) {
@@ -136,7 +147,7 @@ class NoteListFragment:Fragment(), NoteAdapter.Listener, NoteAdapter.MenuListene
                         .createChooserIntent()
                         .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-                    context!!.startActivity(intent);
+                    context!!.startActivity(intent)
                     Toast.makeText(context, R.string.shared, Toast.LENGTH_SHORT).show()
                 }
 
@@ -145,15 +156,12 @@ class NoteListFragment:Fragment(), NoteAdapter.Listener, NoteAdapter.MenuListene
                         .Builder(context!!)
                         .setTitle(R.string.delete)
                         .setMessage(R.string.confirmation)
-                        .setPositiveButton(R.string.yes, DialogInterface.OnClickListener() {
+                        .setPositiveButton(R.string.yes, {
                                 dialog, which ->
 
-                            NoteRepository(App.getDatabaseHolder()).delete(id, null)
-                            Toast.makeText(context, R.string.deleted, Toast.LENGTH_SHORT).show()
-                            updateData()
-
+                            deleteNote(id)
                         })
-                        .setNegativeButton(R.string.no, DialogInterface.OnClickListener() {
+                        .setNegativeButton(R.string.no, {
                                 dialog, which ->
                             Toast.makeText(context, R.string.canceled, Toast.LENGTH_SHORT).show()
                         })
@@ -165,6 +173,7 @@ class NoteListFragment:Fragment(), NoteAdapter.Listener, NoteAdapter.MenuListene
                 R.id.popup_menu_second -> {
                     (getActivity() as MainActivity).showEditFragment(NoteEditFragment.NAME_KEY, id)
                     updateData()
+
                 }
 
             }
@@ -172,6 +181,7 @@ class NoteListFragment:Fragment(), NoteAdapter.Listener, NoteAdapter.MenuListene
         }
         popupMenu.show()
     }
+
     private fun startAnimationViaAnimator(cardView:CardView) {
         val set = AnimatorInflater.loadAnimator(getActivity(), R.animator.animation) as AnimatorSet
         set.setTarget(cardView)

@@ -14,6 +14,10 @@ import androidx.fragment.app.Fragment;
 import com.github.paknikolay.AbbyyAndroid.db.Note
 import com.github.paknikolay.AbbyyAndroid.db.NoteRepository;
 import com.squareup.picasso.Picasso;
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.w3c.dom.Text;
 
 import java.io.File;
@@ -47,6 +51,16 @@ class NoteEditFragment : Fragment() {
         return inflater.inflate(R.layout.note_edit_fragment, container, false);
     }
 
+    fun updateNote(note:Note)= CoroutineScope(Dispatchers.Main).launch {
+        val task = async(Dispatchers.IO) {
+            NoteRepository(App.getDatabaseHolder()).update(note, null)
+        }
+
+        task.await()
+        Toast.makeText(context, R.string.saved, Toast.LENGTH_SHORT).show()
+        ((activity as MainActivity).getFragment(NoteListFragment.TAG) as NoteListFragment?)?.updateData()
+
+    }
     override fun onViewCreated(@NonNull view:View, @Nullable savedInstanceState:Bundle?) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -72,11 +86,7 @@ class NoteEditFragment : Fragment() {
                         dialog, which ->
                     val note = NoteRepository.getNoteById(id)
                     val newNote  = Note(note.date, editText.text!!.toString(), note.imagePath, note.id)
-
-                    NoteRepository(App.getDatabaseHolder()).update(newNote, null)
-                    Toast.makeText(context, R.string.saved, Toast.LENGTH_SHORT).show()
-                    ((activity as MainActivity).getFragment(NoteListFragment.TAG) as NoteListFragment?)?.updateData()
-
+                    updateNote(newNote)
                 })
                 .setNegativeButton(R.string.no, {
                         dialog, which ->
