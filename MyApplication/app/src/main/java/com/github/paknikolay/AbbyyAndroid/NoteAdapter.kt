@@ -16,13 +16,12 @@ class NoteAdapter : RecyclerView.Adapter<NoteViewHolder>() {
     }
 
     interface MenuListener {
-        fun onMenuClick(view: View, note: Note)
+        fun onMenuClick(view: View, id: Long)
     }
 
     private var noteList: List<Note> = mutableListOf()
     private var listener: Listener? = null
     private var menuListener: MenuListener? = null
-
 
     fun setListener(listener: Listener) {
         this.listener = listener

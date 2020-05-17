@@ -44,7 +44,7 @@ class NoteListFragment:Fragment(), NoteAdapter.Listener, NoteAdapter.MenuListene
 
             arguments.putString(NAME_KEY, name);
             fragment.setArguments(arguments);
-            return fragment;
+            return fragment
         }
     }
 
@@ -74,6 +74,8 @@ class NoteListFragment:Fragment(), NoteAdapter.Listener, NoteAdapter.MenuListene
         recyclerView.setHasFixedSize(true)
         recyclerView.getRecycledViewPool().setMaxRecycledViews(0, 15)
 
+        loadData(recyclerView, this, this)
+
         val name = getArguments()?.getString(NAME_KEY)
 
         val addNoteButton = view.findViewById<ImageView>(R.id.addNoteButton)
@@ -85,13 +87,16 @@ class NoteListFragment:Fragment(), NoteAdapter.Listener, NoteAdapter.MenuListene
 
     fun updateData() {
         val recyclerView = view!!.findViewById<RecyclerView>(R.id.NoteRecyclerView)
-        loadData(recyclerView, this, this)
+        if (recyclerView.adapter == null) {
+            return;
+        }
+        (recyclerView.adapter as NoteAdapter).setNoteList(NoteRepository.getTextList())
     }
 
     @Override
     override fun onResume() {
         super.onResume()
-        NoteRepository.resetStorageCache()
+        //NoteRepository.resetStorageCache()
         updateData()
     }
 
@@ -116,20 +121,20 @@ class NoteListFragment:Fragment(), NoteAdapter.Listener, NoteAdapter.MenuListene
         (getActivity() as MainActivity).showDetailFragment("NoteFragment", id)
     }
 
-    override fun onMenuClick(view: View, note: Note) {
+    override fun onMenuClick(view: View, id: Long) {
         val popupMenu = PopupMenu(context, view)
         popupMenu.inflate(R.menu.popupmenu)
         popupMenu.setOnMenuItemClickListener { item ->
             when(item.itemId) {
                 R.id.popup_menu_first -> {
-                    val file = File(note.imagePath)
+                    val file = File(NoteRepository.getNoteById(id).imagePath)
                     val uri = FileProvider.getUriForFile(context!!, "com.github.paknikolay.AbbyyAndroid", file);
                     val intent = ShareCompat.IntentBuilder.from(activity)
-                    .setType("bynary/binaryImage")
-                    .setStream(uri)
-                    .setChooserTitle("binaryImage")
-                    .createChooserIntent()
-                    .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        .setType("bynary/binaryImage")
+                        .setStream(uri)
+                        .setChooserTitle("binaryImage")
+                        .createChooserIntent()
+                        .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
                     context!!.startActivity(intent);
                     Toast.makeText(context, R.string.shared, Toast.LENGTH_SHORT).show()
@@ -143,7 +148,7 @@ class NoteListFragment:Fragment(), NoteAdapter.Listener, NoteAdapter.MenuListene
                         .setPositiveButton(R.string.yes, DialogInterface.OnClickListener() {
                                 dialog, which ->
 
-                            NoteRepository(App.getDatabaseHolder()).delete(note, null)
+                            NoteRepository(App.getDatabaseHolder()).delete(id, null)
                             Toast.makeText(context, R.string.deleted, Toast.LENGTH_SHORT).show()
                             updateData()
 
@@ -157,7 +162,10 @@ class NoteListFragment:Fragment(), NoteAdapter.Listener, NoteAdapter.MenuListene
                     dialog?.show()
                 }
 
-                R.id.popup_menu_second -> Toast.makeText(context, R.string.popup_menu_second, Toast.LENGTH_SHORT).show()
+                R.id.popup_menu_second -> {
+                    (getActivity() as MainActivity).showEditFragment(NoteEditFragment.NAME_KEY, id)
+                    updateData()
+                }
 
             }
             return@setOnMenuItemClickListener true

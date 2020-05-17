@@ -35,11 +35,13 @@ public class NoteRepository {
             if( id != -1 ) {
                 contentValues.put(NoteContract.Columns.ID, note.getId());
             }
-          //  contentValues.put(NoteContract.Columns.ID, 13);
             contentValues.put(NoteContract.Columns.DATE, note.getDate());
             contentValues.put(NoteContract.Columns.IMAGE_PATH, note.getImagePath());
 
             id = database.insertOrThrow(NoteContract.TABLE_NAME, null, contentValues);
+
+            Note newNote = new Note(note.getDate(), note.getText(), note.getImagePath(), id);
+            textList.put(id, newNote);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -50,7 +52,37 @@ public class NoteRepository {
         return id;
     }
 
-    public void delete(@NonNull final Note note, final SQLiteDatabase db) {
+    public void update(@NonNull final Note note, final SQLiteDatabase db) {
+        assert (note.getId() != -1);
+        try {
+
+            SQLiteDatabase database;
+            if (db == null) {
+                database = databaseHolder.open();
+            } else {
+                database = db;
+            }
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(NoteContract.Columns.TEXT, note.getText());
+            contentValues.put(NoteContract.Columns.ID, note.getId());
+
+            contentValues.put(NoteContract.Columns.DATE, note.getDate());
+            contentValues.put(NoteContract.Columns.IMAGE_PATH, note.getImagePath());
+
+            int affected = database.update(NoteContract.TABLE_NAME, contentValues, NoteContract.Columns.ID + "= ?", new String[]{Long.toString(note.getId())});
+            assert (affected == 1);
+            textList.remove(note.getId());
+            textList.put(note.getId(), note);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (db == null) {
+                databaseHolder.close();
+            }
+        }
+    }
+
+    public void delete(@NonNull final Long id, final SQLiteDatabase db) {
         try {
 
             SQLiteDatabase database;
@@ -60,10 +92,11 @@ public class NoteRepository {
                 database = db;
             }
 
-            new File(note.getImagePath()).delete();
+            new File(NoteRepository.getNoteById(id).getImagePath()).delete();
 
             database.delete(NoteContract.TABLE_NAME, NoteContract.Columns.ID + "=" +
-                    Long.toString(note.getId()), null);
+                    Long.toString(NoteRepository.getNoteById(id).getId()), null);
+            textList.remove(id);
         } catch (Exception e) {
             e.printStackTrace();
         } finally {

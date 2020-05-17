@@ -63,8 +63,8 @@ class CameraFragment:Fragment(), ImageCapture.OnImageSavedListener {
     }
 
     private fun requestPermission() {
-        ActivityCompat.requestPermissions(
-            activity!!, arrayOf(Manifest.permission.CAMERA),
+        requestPermissions(
+            arrayOf(Manifest.permission.CAMERA),
             CAMERA_REQUEST_CODE
         )
     }

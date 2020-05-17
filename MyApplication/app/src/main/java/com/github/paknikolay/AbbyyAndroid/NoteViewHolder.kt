@@ -33,7 +33,7 @@ class NoteViewHolder(
         val currentDate = formater.format(note.date)
         dataView.text = currentDate
         cardView.setOnClickListener { listener.onNoteClick(cardView, id) }
-        menuBotton.setOnClickListener { menuListener.onMenuClick(menuBotton, note) }
+        menuBotton.setOnClickListener { menuListener.onMenuClick(menuBotton, id) }
         val file = File(note.imagePath)
 
         Picasso.get().load(file).fit().centerInside().into(imageView)
